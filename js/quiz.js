@@ -147,11 +147,21 @@ class QuizApp {
             };
 
             if (this.mode === 'choice') {
-                // Generate 3 wrong answers
+                // Generate 3 wrong answers from different words
                 const otherWords = words.filter(w => w !== word);
-                const wrongAnswers = this.shuffleArray(otherWords)
-                    .slice(0, 3)
-                    .map(w => this.direction === 'fr-de' ? w.de : w.fr);
+                const shuffledOther = this.shuffleArray(otherWords);
+                const wrongAnswers = [];
+                
+                // Get up to 3 wrong answers, handle case with fewer words
+                for (let i = 0; i < Math.min(3, shuffledOther.length); i++) {
+                    wrongAnswers.push(this.direction === 'fr-de' ? shuffledOther[i].de : shuffledOther[i].fr);
+                }
+                
+                // If we don't have enough wrong answers, duplicate some to ensure 4 choices
+                while (wrongAnswers.length < 3) {
+                    const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
+                    wrongAnswers.push(wrongAnswers[randomIndex] + ' ');
+                }
 
                 question.choices = this.shuffleArray([question.correctAnswer, ...wrongAnswers]);
             }

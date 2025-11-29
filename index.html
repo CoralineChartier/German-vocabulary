@@ -9,7 +9,8 @@
     <meta name="theme-color" content="#1a73e8">
     <title>Quiz Vocabulaire Allemand</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -72,16 +73,17 @@
                 </div>
 
                 <!-- Multiple Choice Mode -->
-                <div id="choice-container" class="answer-container">
-                    <button class="choice-btn" data-index="0"></button>
-                    <button class="choice-btn" data-index="1"></button>
-                    <button class="choice-btn" data-index="2"></button>
-                    <button class="choice-btn" data-index="3"></button>
+                <div id="choice-container" class="answer-container" role="group" aria-label="Options de réponse">
+                    <button class="choice-btn" data-index="0" aria-label="Option 1"></button>
+                    <button class="choice-btn" data-index="1" aria-label="Option 2"></button>
+                    <button class="choice-btn" data-index="2" aria-label="Option 3"></button>
+                    <button class="choice-btn" data-index="3" aria-label="Option 4"></button>
                 </div>
 
                 <!-- Write Mode -->
                 <div id="write-container" class="answer-container hidden">
-                    <input type="text" id="answer-input" placeholder="Votre réponse..." autocomplete="off" autocapitalize="none">
+                    <label for="answer-input" class="visually-hidden">Votre traduction</label>
+                    <input type="text" id="answer-input" placeholder="Votre réponse..." autocomplete="off" autocapitalize="none" aria-label="Entrez votre traduction">
                     <button id="submit-answer" class="submit-btn">Valider</button>
                 </div>
 

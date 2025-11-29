@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Deutsch Quiz">
+    <meta name="theme-color" content="#1a73e8">
+    <title>Quiz Vocabulaire Allemand</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen active">
+            <h1>🇩🇪 Quiz Vocabulaire</h1>
+            <h2>Allemand</h2>
+            
+            <div id="stats-preview" class="stats-preview"></div>
+            
+            <div class="menu-section">
+                <h3>Mode de quiz</h3>
+                <div class="button-group">
+                    <button id="mode-choice" class="mode-btn active" data-mode="choice">
+                        <span class="icon">🔢</span>
+                        <span>Choix multiple</span>
+                    </button>
+                    <button id="mode-write" class="mode-btn" data-mode="write">
+                        <span class="icon">✏️</span>
+                        <span>Écrire</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>Direction</h3>
+                <div class="button-group">
+                    <button id="dir-fr-de" class="dir-btn active" data-direction="fr-de">
+                        <span>🇫🇷 → 🇩🇪</span>
+                    </button>
+                    <button id="dir-de-fr" class="dir-btn" data-direction="de-fr">
+                        <span>🇩🇪 → 🇫🇷</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>Chapitre</h3>
+                <select id="chapter-select">
+                    <option value="all">Tous les chapitres</option>
+                </select>
+            </div>
+
+            <button id="start-quiz" class="start-btn">Commencer le quiz</button>
+            <button id="stats-btn" class="stats-btn">📊 Statistiques</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <button id="back-btn" class="back-btn">← Retour</button>
+                <div class="progress-info">
+                    <span id="question-counter">1/10</span>
+                    <span id="score">Score: 0</span>
+                </div>
+            </div>
+
+            <div class="quiz-content">
+                <div class="word-display">
+                    <p id="word-to-translate" class="word"></p>
+                    <p id="word-hint" class="hint"></p>
+                </div>
+
+                <!-- Multiple Choice Mode -->
+                <div id="choice-container" class="answer-container" role="group" aria-label="Options de réponse">
+                    <button class="choice-btn" data-index="0" aria-label="Option 1"></button>
+                    <button class="choice-btn" data-index="1" aria-label="Option 2"></button>
+                    <button class="choice-btn" data-index="2" aria-label="Option 3"></button>
+                    <button class="choice-btn" data-index="3" aria-label="Option 4"></button>
+                </div>
+
+                <!-- Write Mode -->
+                <div id="write-container" class="answer-container hidden">
+                    <label for="answer-input" class="visually-hidden">Votre traduction</label>
+                    <input type="text" id="answer-input" placeholder="Votre réponse..." autocomplete="off" autocapitalize="none" aria-label="Entrez votre traduction">
+                    <button id="submit-answer" class="submit-btn">Valider</button>
+                </div>
+
+                <div id="feedback" class="feedback hidden">
+                    <p id="feedback-text"></p>
+                    <p id="correct-answer"></p>
+                </div>
+            </div>
+
+            <button id="next-btn" class="next-btn hidden">Question suivante</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h1>🎉 Résultats</h1>
+            <div class="results-content">
+                <div class="score-display">
+                    <p id="final-score"></p>
+                    <p id="percentage"></p>
+                </div>
+                <div id="results-details"></div>
+            </div>
+            <button id="restart-btn" class="start-btn">Recommencer</button>
+            <button id="home-btn" class="home-btn">Menu principal</button>
+        </div>
+
+        <!-- Statistics Screen -->
+        <div id="stats-screen" class="screen">
+            <div class="stats-header">
+                <button id="stats-back-btn" class="back-btn">← Retour</button>
+                <h1>📊 Statistiques</h1>
+            </div>
+            <div id="stats-content" class="stats-content"></div>
+            <button id="reset-stats-btn" class="reset-btn">Réinitialiser les statistiques</button>
+        </div>
+    </div>
+
+    <script src="js/vocabulary.js"></script>
+    <script src="js/quiz.js"></script>
+</body>
+</html>

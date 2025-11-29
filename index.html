@@ -20,6 +20,8 @@
             <h1>🇩🇪 Quiz Vocabulaire</h1>
             <h2>Allemand</h2>
             
+            <div id="stats-preview" class="stats-preview"></div>
+            
             <div class="menu-section">
                 <h3>Mode de quiz</h3>
                 <div class="button-group">
@@ -54,6 +56,7 @@
             </div>
 
             <button id="start-quiz" class="start-btn">Commencer le quiz</button>
+            <button id="stats-btn" class="stats-btn">📊 Statistiques</button>
         </div>
 
         <!-- Quiz Screen -->
@@ -108,6 +111,16 @@
             </div>
             <button id="restart-btn" class="start-btn">Recommencer</button>
             <button id="home-btn" class="home-btn">Menu principal</button>
+        </div>
+
+        <!-- Statistics Screen -->
+        <div id="stats-screen" class="screen">
+            <div class="stats-header">
+                <button id="stats-back-btn" class="back-btn">← Retour</button>
+                <h1>📊 Statistiques</h1>
+            </div>
+            <div id="stats-content" class="stats-content"></div>
+            <button id="reset-stats-btn" class="reset-btn">Réinitialiser les statistiques</button>
         </div>
     </div>
 

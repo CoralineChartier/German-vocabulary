@@ -14,6 +14,7 @@ class QuizApp {
         this.initializeDOM();
         this.initializeEventListeners();
         this.populateChapters();
+        this.updateStatsPreview();
     }
 
     initializeDOM() {
@@ -21,6 +22,7 @@ class QuizApp {
         this.homeScreen = document.getElementById('home-screen');
         this.quizScreen = document.getElementById('quiz-screen');
         this.resultsScreen = document.getElementById('results-screen');
+        this.statsScreen = document.getElementById('stats-screen');
 
         // Home screen elements
         this.modeChoiceBtn = document.getElementById('mode-choice');
@@ -29,6 +31,8 @@ class QuizApp {
         this.dirDeFrBtn = document.getElementById('dir-de-fr');
         this.chapterSelect = document.getElementById('chapter-select');
         this.startBtn = document.getElementById('start-quiz');
+        this.statsBtn = document.getElementById('stats-btn');
+        this.statsPreview = document.getElementById('stats-preview');
 
         // Quiz screen elements
         this.backBtn = document.getElementById('back-btn');
@@ -52,6 +56,11 @@ class QuizApp {
         this.resultsDetails = document.getElementById('results-details');
         this.restartBtn = document.getElementById('restart-btn');
         this.homeBtn = document.getElementById('home-btn');
+
+        // Stats screen elements
+        this.statsBackBtn = document.getElementById('stats-back-btn');
+        this.statsContent = document.getElementById('stats-content');
+        this.resetStatsBtn = document.getElementById('reset-stats-btn');
     }
 
     initializeEventListeners() {
@@ -70,6 +79,9 @@ class QuizApp {
 
         // Start quiz
         this.startBtn.addEventListener('click', () => this.startQuiz());
+
+        // Stats button
+        this.statsBtn.addEventListener('click', () => this.showStats());
 
         // Back button
         this.backBtn.addEventListener('click', () => this.goHome());
@@ -93,6 +105,10 @@ class QuizApp {
         // Results screen
         this.restartBtn.addEventListener('click', () => this.startQuiz());
         this.homeBtn.addEventListener('click', () => this.goHome());
+
+        // Stats screen
+        this.statsBackBtn.addEventListener('click', () => this.goHome());
+        this.resetStatsBtn.addEventListener('click', () => this.confirmResetStats());
     }
 
     populateChapters() {
@@ -184,13 +200,17 @@ class QuizApp {
         this.homeScreen.classList.remove('active');
         this.quizScreen.classList.remove('active');
         this.resultsScreen.classList.remove('active');
+        this.statsScreen.classList.remove('active');
 
         if (screen === 'home') {
             this.homeScreen.classList.add('active');
+            this.updateStatsPreview();
         } else if (screen === 'quiz') {
             this.quizScreen.classList.add('active');
         } else if (screen === 'results') {
             this.resultsScreen.classList.add('active');
+        } else if (screen === 'stats') {
+            this.statsScreen.classList.add('active');
         }
     }
 
@@ -334,8 +354,19 @@ class QuizApp {
         if (this.currentQuestionIndex < this.questions.length) {
             this.showQuestion();
         } else {
+            this.saveQuizStats();
             this.showResults();
         }
+    }
+
+    saveQuizStats() {
+        statsManager.recordQuiz({
+            chapter: this.selectedChapter,
+            mode: this.mode,
+            direction: this.direction,
+            totalQuestions: this.questions.length,
+            correctAnswers: this.score
+        });
     }
 
     showResults() {
@@ -358,6 +389,107 @@ class QuizApp {
             `;
             this.resultsDetails.appendChild(item);
         });
+    }
+
+    updateStatsPreview() {
+        const stats = statsManager.getStats();
+        const pct = statsManager.getOverallPercentage();
+        
+        if (stats.totalQuizzes > 0) {
+            this.statsPreview.innerHTML = `
+                <span class="stats-mini">📊 ${stats.totalQuizzes} quiz${stats.totalQuizzes > 1 ? 's' : ''} • ${pct}% réussite</span>
+            `;
+        } else {
+            this.statsPreview.innerHTML = `<span class="stats-mini">📊 Aucune statistique</span>`;
+        }
+    }
+
+    showStats() {
+        this.showScreen('stats');
+        this.renderStats();
+    }
+
+    renderStats() {
+        const stats = statsManager.getStats();
+        const pct = statsManager.getOverallPercentage();
+
+        let html = `
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalQuizzes}</div>
+                    <div class="stat-label">Quiz effectués</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalQuestions}</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-number">${pct}%</div>
+                    <div class="stat-label">Réussite globale</div>
+                </div>
+            </div>
+        `;
+
+        // Mode stats
+        html += `
+            <div class="stats-section">
+                <h3>Par mode</h3>
+                <div class="stats-bars">
+                    ${this.renderStatBar('Choix multiple', stats.byMode.choice)}
+                    ${this.renderStatBar('Écriture', stats.byMode.write)}
+                </div>
+            </div>
+        `;
+
+        // Direction stats
+        html += `
+            <div class="stats-section">
+                <h3>Par direction</h3>
+                <div class="stats-bars">
+                    ${this.renderStatBar('🇫🇷 → 🇩🇪', stats.byDirection['fr-de'])}
+                    ${this.renderStatBar('🇩🇪 → 🇫🇷', stats.byDirection['de-fr'])}
+                </div>
+            </div>
+        `;
+
+        // History
+        if (stats.history.length > 0) {
+            html += `
+                <div class="stats-section">
+                    <h3>Historique récent</h3>
+                    <div class="history-list">
+                        ${stats.history.slice(0, 10).map(h => `
+                            <div class="history-item">
+                                <span class="history-date">${new Date(h.date).toLocaleDateString('fr-FR')}</span>
+                                <span class="history-score">${h.score}/${h.total} (${h.percentage}%)</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        this.statsContent.innerHTML = html;
+    }
+
+    renderStatBar(label, data) {
+        const pct = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+        return `
+            <div class="stat-bar-container">
+                <div class="stat-bar-label">${label}</div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill" style="width: ${pct}%"></div>
+                </div>
+                <div class="stat-bar-value">${pct}% (${data.correct}/${data.total})</div>
+            </div>
+        `;
+    }
+
+    confirmResetStats() {
+        if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les statistiques ?')) {
+            statsManager.resetStats();
+            this.renderStats();
+        }
     }
 
     goHome() {

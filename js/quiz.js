@@ -31,6 +31,7 @@ class QuizApp {
         this.dirDeFrBtn = document.getElementById('dir-de-fr');
         this.chapterSelect = document.getElementById('chapter-select');
         this.startBtn = document.getElementById('start-quiz');
+        this.grammarBtn = document.getElementById('grammar-btn');
         this.statsBtn = document.getElementById('stats-btn');
         this.statsPreview = document.getElementById('stats-preview');
 
@@ -79,6 +80,11 @@ class QuizApp {
 
         // Start quiz
         this.startBtn.addEventListener('click', () => this.startQuiz());
+
+        // Grammar button
+        this.grammarBtn.addEventListener('click', () => {
+            window.location.href = 'grammar.html';
+        });
 
         // Stats button
         this.statsBtn.addEventListener('click', () => this.showStats());

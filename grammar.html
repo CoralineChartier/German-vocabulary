@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Deutsch Grammaire">
+    <meta name="theme-color" content="#1a73e8">
+    <title>Quiz Grammaire Allemande</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/grammar.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen active">
+            <h1>📚 Grammaire Allemande</h1>
+            <h2>Déclinaisons & Pronoms</h2>
+            
+            <div id="stats-preview" class="stats-preview"></div>
+            
+            <div class="menu-section">
+                <h3>Mode de quiz</h3>
+                <div class="button-group">
+                    <button id="mode-identify" class="mode-btn active" data-mode="identify">
+                        <span class="icon">🔍</span>
+                        <span>Identifier</span>
+                        <small>Cas & Genre</small>
+                    </button>
+                    <button id="mode-write" class="mode-btn" data-mode="write">
+                        <span class="icon">✏️</span>
+                        <span>Écrire</span>
+                        <small>Forme correcte</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>Type de pratique</h3>
+                <select id="practice-type-select">
+                    <option value="all">Tout mélanger</option>
+                    <option value="article">Articles (der/die/das)</option>
+                    <option value="adjective">Terminaisons d'adjectifs</option>
+                    <option value="personalPronoun">Pronoms personnels</option>
+                    <option value="possessivePronoun">Pronoms possessifs</option>
+                    <option value="demonstrativePronoun">Pronoms démonstratifs</option>
+                </select>
+            </div>
+
+            <button id="start-quiz" class="start-btn">Commencer le quiz</button>
+            <button id="tables-btn" class="tables-btn">📋 Voir les tableaux</button>
+            <button id="stats-btn" class="stats-btn">📊 Statistiques</button>
+            <button id="vocab-btn" class="vocab-btn">← Retour au vocabulaire</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <button id="back-btn" class="back-btn">← Retour</button>
+                <div class="progress-info">
+                    <span id="question-counter">1/10</span>
+                    <span id="score">Score: 0</span>
+                </div>
+            </div>
+
+            <div class="quiz-content">
+                <div class="word-display">
+                    <p id="question-text" class="word"></p>
+                    <p id="context-text" class="context"></p>
+                    <p id="word-hint" class="hint"></p>
+                </div>
+
+                <!-- Identify Mode (Multiple Choice for Case & Gender) -->
+                <div id="identify-container" class="answer-container">
+                    <div class="identify-grid">
+                        <button class="identify-btn" data-answer="Nominativ">Nominatif</button>
+                        <button class="identify-btn" data-answer="Akkusativ">Accusatif</button>
+                        <button class="identify-btn" data-answer="Dativ">Datif</button>
+                        <button class="identify-btn" data-answer="Genitiv">Génitif</button>
+                    </div>
+                    <div class="identify-grid">
+                        <button class="identify-btn" data-answer="masculine">Masculin</button>
+                        <button class="identify-btn" data-answer="feminine">Féminin</button>
+                        <button class="identify-btn" data-answer="neuter">Neutre</button>
+                    </div>
+                </div>
+
+                <!-- Write Mode -->
+                <div id="write-container" class="answer-container hidden">
+                    <label for="answer-input" class="visually-hidden">Votre réponse</label>
+                    <input type="text" id="answer-input" placeholder="Écrivez la forme correcte..." autocomplete="off" autocapitalize="none" aria-label="Entrez votre réponse">
+                    <button id="submit-answer" class="submit-btn">Valider</button>
+                </div>
+
+                <div id="feedback" class="feedback hidden">
+                    <p id="feedback-text"></p>
+                    <p id="correct-answer"></p>
+                </div>
+            </div>
+
+            <button id="next-btn" class="next-btn hidden">Question suivante</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h1>🎉 Résultats</h1>
+            <div class="results-content">
+                <div class="score-display">
+                    <p id="final-score"></p>
+                    <p id="percentage"></p>
+                </div>
+                <div id="results-details"></div>
+            </div>
+            <button id="restart-btn" class="start-btn">Recommencer</button>
+            <button id="home-btn" class="home-btn">Menu principal</button>
+        </div>
+
+        <!-- Statistics Screen -->
+        <div id="stats-screen" class="screen">
+            <div class="stats-header">
+                <button id="stats-back-btn" class="back-btn">← Retour</button>
+                <h1>📊 Statistiques</h1>
+            </div>
+            <div id="stats-content" class="stats-content"></div>
+            <button id="reset-stats-btn" class="reset-btn">Réinitialiser les statistiques</button>
+        </div>
+
+        <!-- Tables Reference Screen -->
+        <div id="tables-screen" class="screen">
+            <div class="tables-header">
+                <button id="tables-back-btn" class="back-btn">← Retour</button>
+                <h1>📋 Tableaux de référence</h1>
+            </div>
+            
+            <div class="tables-content">
+                <!-- Articles définis -->
+                <div class="table-section">
+                    <h2>Articles définis (der/die/das)</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cas</th>
+                                    <th>Masculin</th>
+                                    <th>Féminin</th>
+                                    <th>Neutre</th>
+                                    <th>Pluriel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nominatif</td>
+                                    <td class="highlight">der</td>
+                                    <td class="highlight">die</td>
+                                    <td class="highlight">das</td>
+                                    <td class="highlight">die</td>
+                                </tr>
+                                <tr>
+                                    <td>Accusatif</td>
+                                    <td class="highlight">den</td>
+                                    <td class="highlight">die</td>
+                                    <td class="highlight">das</td>
+                                    <td class="highlight">die</td>
+                                </tr>
+                                <tr>
+                                    <td>Datif</td>
+                                    <td class="highlight">dem</td>
+                                    <td class="highlight">der</td>
+                                    <td class="highlight">dem</td>
+                                    <td class="highlight">den</td>
+                                </tr>
+                                <tr>
+                                    <td>Génitif</td>
+                                    <td class="highlight">des</td>
+                                    <td class="highlight">der</td>
+                                    <td class="highlight">des</td>
+                                    <td class="highlight">der</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Articles indéfinis -->
+                <div class="table-section">
+                    <h2>Articles indéfinis (ein/eine/ein)</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cas</th>
+                                    <th>Masculin</th>
+                                    <th>Féminin</th>
+                                    <th>Neutre</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nominatif</td>
+                                    <td class="highlight">ein</td>
+                                    <td class="highlight">eine</td>
+                                    <td class="highlight">ein</td>
+                                </tr>
+                                <tr>
+                                    <td>Accusatif</td>
+                                    <td class="highlight">einen</td>
+                                    <td class="highlight">eine</td>
+                                    <td class="highlight">ein</td>
+                                </tr>
+                                <tr>
+                                    <td>Datif</td>
+                                    <td class="highlight">einem</td>
+                                    <td class="highlight">einer</td>
+                                    <td class="highlight">einem</td>
+                                </tr>
+                                <tr>
+                                    <td>Génitif</td>
+                                    <td class="highlight">eines</td>
+                                    <td class="highlight">einer</td>
+                                    <td class="highlight">eines</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Terminaisons d'adjectifs avec article défini -->
+                <div class="table-section">
+                    <h2>Terminaisons d'adjectifs (avec article défini)</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cas</th>
+                                    <th>Masculin</th>
+                                    <th>Féminin</th>
+                                    <th>Neutre</th>
+                                    <th>Pluriel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nominatif</td>
+                                    <td class="highlight">-e</td>
+                                    <td class="highlight">-e</td>
+                                    <td class="highlight">-e</td>
+                                    <td class="highlight">-en</td>
+                                </tr>
+                                <tr>
+                                    <td>Accusatif</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-e</td>
+                                    <td class="highlight">-e</td>
+                                    <td class="highlight">-en</td>
+                                </tr>
+                                <tr>
+                                    <td>Datif</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                </tr>
+                                <tr>
+                                    <td>Génitif</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                    <td class="highlight">-en</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pronoms personnels -->
+                <div class="table-section">
+                    <h2>Pronoms personnels</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Personne</th>
+                                    <th>Nominatif</th>
+                                    <th>Accusatif</th>
+                                    <th>Datif</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>je</td>
+                                    <td class="highlight">ich</td>
+                                    <td class="highlight">mich</td>
+                                    <td class="highlight">mir</td>
+                                </tr>
+                                <tr>
+                                    <td>tu</td>
+                                    <td class="highlight">du</td>
+                                    <td class="highlight">dich</td>
+                                    <td class="highlight">dir</td>
+                                </tr>
+                                <tr>
+                                    <td>il</td>
+                                    <td class="highlight">er</td>
+                                    <td class="highlight">ihn</td>
+                                    <td class="highlight">ihm</td>
+                                </tr>
+                                <tr>
+                                    <td>elle</td>
+                                    <td class="highlight">sie</td>
+                                    <td class="highlight">sie</td>
+                                    <td class="highlight">ihr</td>
+                                </tr>
+                                <tr>
+                                    <td>il/elle (neutre)</td>
+                                    <td class="highlight">es</td>
+                                    <td class="highlight">es</td>
+                                    <td class="highlight">ihm</td>
+                                </tr>
+                                <tr>
+                                    <td>nous</td>
+                                    <td class="highlight">wir</td>
+                                    <td class="highlight">uns</td>
+                                    <td class="highlight">uns</td>
+                                </tr>
+                                <tr>
+                                    <td>vous (informel)</td>
+                                    <td class="highlight">ihr</td>
+                                    <td class="highlight">euch</td>
+                                    <td class="highlight">euch</td>
+                                </tr>
+                                <tr>
+                                    <td>ils/elles</td>
+                                    <td class="highlight">sie</td>
+                                    <td class="highlight">sie</td>
+                                    <td class="highlight">ihnen</td>
+                                </tr>
+                                <tr>
+                                    <td>vous (formel)</td>
+                                    <td class="highlight">Sie</td>
+                                    <td class="highlight">Sie</td>
+                                    <td class="highlight">Ihnen</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pronoms possessifs (exemple avec mein) -->
+                <div class="table-section">
+                    <h2>Pronoms possessifs (exemple: mein - mon/ma)</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cas</th>
+                                    <th>Masculin</th>
+                                    <th>Féminin</th>
+                                    <th>Neutre</th>
+                                    <th>Pluriel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nominatif</td>
+                                    <td class="highlight">mein</td>
+                                    <td class="highlight">meine</td>
+                                    <td class="highlight">mein</td>
+                                    <td class="highlight">meine</td>
+                                </tr>
+                                <tr>
+                                    <td>Accusatif</td>
+                                    <td class="highlight">meinen</td>
+                                    <td class="highlight">meine</td>
+                                    <td class="highlight">mein</td>
+                                    <td class="highlight">meine</td>
+                                </tr>
+                                <tr>
+                                    <td>Datif</td>
+                                    <td class="highlight">meinem</td>
+                                    <td class="highlight">meiner</td>
+                                    <td class="highlight">meinem</td>
+                                    <td class="highlight">meinen</td>
+                                </tr>
+                                <tr>
+                                    <td>Génitif</td>
+                                    <td class="highlight">meines</td>
+                                    <td class="highlight">meiner</td>
+                                    <td class="highlight">meines</td>
+                                    <td class="highlight">meiner</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="table-note">📝 Même déclinaison pour: dein, sein, ihr, unser, euer</p>
+                </div>
+
+                <!-- Pronoms démonstratifs -->
+                <div class="table-section">
+                    <h2>Pronoms démonstratifs (dieser - ce/cette)</h2>
+                    <div class="declension-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cas</th>
+                                    <th>Masculin</th>
+                                    <th>Féminin</th>
+                                    <th>Neutre</th>
+                                    <th>Pluriel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nominatif</td>
+                                    <td class="highlight">dieser</td>
+                                    <td class="highlight">diese</td>
+                                    <td class="highlight">dieses</td>
+                                    <td class="highlight">diese</td>
+                                </tr>
+                                <tr>
+                                    <td>Accusatif</td>
+                                    <td class="highlight">diesen</td>
+                                    <td class="highlight">diese</td>
+                                    <td class="highlight">dieses</td>
+                                    <td class="highlight">diese</td>
+                                </tr>
+                                <tr>
+                                    <td>Datif</td>
+                                    <td class="highlight">diesem</td>
+                                    <td class="highlight">dieser</td>
+                                    <td class="highlight">diesem</td>
+                                    <td class="highlight">diesen</td>
+                                </tr>
+                                <tr>
+                                    <td>Génitif</td>
+                                    <td class="highlight">dieses</td>
+                                    <td class="highlight">dieser</td>
+                                    <td class="highlight">dieses</td>
+                                    <td class="highlight">dieser</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="table-note">📝 Même déclinaison pour: jener</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/grammar-data.js"></script>
+    <script src="js/grammar-quiz.js"></script>
+</body>
+</html>

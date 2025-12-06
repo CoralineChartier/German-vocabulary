@@ -488,8 +488,8 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* Stats Button */
-.stats-btn {
+/* Grammar and Stats Buttons */
+.grammar-btn, .stats-btn {
     width: 100%;
     padding: 14px;
     background: transparent;
@@ -503,7 +503,7 @@ body {
     transition: all 0.2s ease;
 }
 
-.stats-btn:hover {
+.grammar-btn:hover, .stats-btn:hover {
     background: #e8f0fe;
 }
 

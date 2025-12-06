@@ -1,0 +1,211 @@
+/* Grammar Quiz Specific Styles */
+
+/* Identify Mode Grid */
+.identify-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.identify-grid:last-child {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.identify-btn {
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.identify-btn:hover {
+    border-color: var(--primary-color);
+    background: #f8f9fa;
+}
+
+.identify-btn:active {
+    transform: scale(0.98);
+}
+
+.identify-btn.selected {
+    border-color: var(--primary-color);
+    background: #e8f0fe;
+    color: var(--primary-color);
+}
+
+.identify-btn.correct {
+    border-color: var(--success-color);
+    background: #e6f4ea;
+    color: var(--success-color);
+}
+
+.identify-btn.incorrect {
+    border-color: var(--error-color);
+    background: #fce8e6;
+    color: var(--error-color);
+}
+
+.identify-btn.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Context text for grammar questions */
+.context {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    margin-top: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Tables/Vocab button */
+.tables-btn, .vocab-btn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.tables-btn:hover, .vocab-btn:hover {
+    background: #e8f0fe;
+}
+
+/* Tables Screen Styles */
+.tables-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.tables-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tables-content {
+    margin-bottom: 20px;
+}
+
+.table-section {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.table-section h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.declension-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.declension-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.declension-table th {
+    background: var(--background);
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 0.85rem;
+}
+
+.declension-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.declension-table td:first-child {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.declension-table td.highlight {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+}
+
+.table-note {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff3cd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+/* Mode button small text */
+.mode-btn small {
+    font-size: 0.75rem;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+/* Responsive tables for mobile */
+@media (max-width: 400px) {
+    .declension-table {
+        font-size: 0.8rem;
+    }
+    
+    .declension-table th,
+    .declension-table td {
+        padding: 8px 4px;
+    }
+    
+    .table-section {
+        padding: 15px;
+    }
+    
+    .identify-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .identify-grid:last-child {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.table-section {
+    animation: slideIn 0.3s ease;
+}

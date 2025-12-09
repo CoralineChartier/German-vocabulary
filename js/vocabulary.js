@@ -134,7 +134,7 @@ const vocabulary = {
                 { de: "das Resultat", fr: "le résultat", hint: "das, -e" },
                 { de: "vorkommen", fr: "se produire/arriver", hint: "verbe séparable" },
                 { de: "formulieren", fr: "formuler", hint: "verbe" },
-                { de: "die Sachlichkeit", fr: "l'objectivité", hint: "die, Sg." },
+                { de: "die Sachlichkeit", fr: "l'objectivité", hint: "die" },
                 { de: "ein Signal geben", fr: "donner un signal", hint: "expression" },
                 { de: "jemanden/etwas ausnutzen", fr: "exploiter quelqu'un/quelque chose", hint: "verbe séparable" },
                 { de: "Verabredungen einhalten", fr: "respecter des rendez-vous", hint: "verbe séparable" },

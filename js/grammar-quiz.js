@@ -106,8 +106,6 @@ class GrammarQuizApp {
         this.resetStatsBtn.addEventListener('click', () => this.confirmResetStats());
     }
 
-
-
     generateQuestions() {
         this.questions = [];
         
@@ -200,8 +198,6 @@ class GrammarQuizApp {
         this.submitAnswerBtn.disabled = false;
         setTimeout(() => this.answerInput.focus(), 100);
     }
-
-
 
     handleWriteAnswer() {
         const userAnswer = this.answerInput.value.trim();

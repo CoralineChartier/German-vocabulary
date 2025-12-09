@@ -589,11 +589,16 @@ const grammarQuizGenerator = {
             article = grammarData.articles.indefinite.singular[gender][caseKey];
         }
         
+        // Build correct answer: article + adjective with ending + noun
+        const correctAnswer = article ? 
+            `${article} ${adjective.word}${correctEnding} ${noun.word}` : 
+            `${adjective.word}${correctEnding} ${noun.word}`;
+        
         return {
             type: 'adjective',
             questionText: `${grammarData.labels.cases[caseKey]} - ${grammarData.labels.genders[gender]}`,
-            contextText: article ? `${article} ${adjective.word}___ ${noun.word}` : `${adjective.word}___ ${noun.word}`,
-            correctAnswer: correctEnding,
+            contextText: `${adjective.word} ${noun.word}`,  // Only show adjective and noun (no article, no ending)
+            correctAnswer: correctAnswer,  // Full answer with article
             caseKey,
             gender,
             adjective: adjective.word,

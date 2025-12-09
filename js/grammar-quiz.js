@@ -2,14 +2,13 @@
 
 class GrammarQuizApp {
     constructor() {
-        this.mode = 'identify'; // 'identify' or 'write'
+        this.mode = 'write'; // Always use 'write' mode
         this.practiceType = 'all'; // 'all' or specific type
         this.questions = [];
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.answers = [];
         this.questionsPerQuiz = 10;
-        this.selectedAnswers = { case: null, gender: null };
 
         this.initializeDOM();
         this.initializeEventListeners();
@@ -25,8 +24,6 @@ class GrammarQuizApp {
         this.tablesScreen = document.getElementById('tables-screen');
 
         // Home screen elements
-        this.modeIdentifyBtn = document.getElementById('mode-identify');
-        this.modeWriteBtn = document.getElementById('mode-write');
         this.practiceTypeSelect = document.getElementById('practice-type-select');
         this.startBtn = document.getElementById('start-quiz');
         this.tablesBtn = document.getElementById('tables-btn');
@@ -41,9 +38,7 @@ class GrammarQuizApp {
         this.questionText = document.getElementById('question-text');
         this.contextText = document.getElementById('context-text');
         this.wordHint = document.getElementById('word-hint');
-        this.identifyContainer = document.getElementById('identify-container');
         this.writeContainer = document.getElementById('write-container');
-        this.identifyBtns = document.querySelectorAll('.identify-btn');
         this.answerInput = document.getElementById('answer-input');
         this.submitAnswerBtn = document.getElementById('submit-answer');
         this.feedback = document.getElementById('feedback');
@@ -68,10 +63,6 @@ class GrammarQuizApp {
     }
 
     initializeEventListeners() {
-        // Mode selection
-        this.modeIdentifyBtn.addEventListener('click', () => this.selectMode('identify'));
-        this.modeWriteBtn.addEventListener('click', () => this.selectMode('write'));
-
         // Practice type selection
         this.practiceTypeSelect.addEventListener('change', (e) => {
             this.practiceType = e.target.value;
@@ -95,11 +86,6 @@ class GrammarQuizApp {
         this.backBtn.addEventListener('click', () => this.goHome());
         this.tablesBackBtn.addEventListener('click', () => this.goHome());
 
-        // Identify buttons
-        this.identifyBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => this.handleIdentifyAnswer(e));
-        });
-
         // Submit answer (write mode)
         this.submitAnswerBtn.addEventListener('click', () => this.handleWriteAnswer());
         this.answerInput.addEventListener('keypress', (e) => {
@@ -118,12 +104,6 @@ class GrammarQuizApp {
         // Stats screen
         this.statsBackBtn.addEventListener('click', () => this.goHome());
         this.resetStatsBtn.addEventListener('click', () => this.confirmResetStats());
-    }
-
-    selectMode(mode) {
-        this.mode = mode;
-        this.modeIdentifyBtn.classList.toggle('active', mode === 'identify');
-        this.modeWriteBtn.classList.toggle('active', mode === 'write');
     }
 
     generateQuestions() {
@@ -209,130 +189,14 @@ class GrammarQuizApp {
         this.feedback.classList.add('hidden');
         this.feedback.classList.remove('correct', 'incorrect');
         this.nextBtn.classList.add('hidden');
-        this.selectedAnswers = { case: null, gender: null };
 
-        // Show appropriate answer container
-        if (this.mode === 'identify') {
-            this.identifyContainer.classList.remove('hidden');
-            this.writeContainer.classList.add('hidden');
-
-            // Reset identify buttons
-            this.identifyBtns.forEach(btn => {
-                btn.classList.remove('correct', 'incorrect', 'disabled', 'selected');
-                btn.disabled = false;
-            });
-        } else {
-            this.identifyContainer.classList.add('hidden');
-            this.writeContainer.classList.remove('hidden');
-
-            // Clear and focus input
-            this.answerInput.value = '';
-            this.answerInput.classList.remove('correct', 'incorrect');
-            this.answerInput.disabled = false;
-            this.submitAnswerBtn.disabled = false;
-            setTimeout(() => this.answerInput.focus(), 100);
-        }
-    }
-
-    handleIdentifyAnswer(e) {
-        const selectedBtn = e.target;
-        const selectedAnswer = selectedBtn.dataset.answer;
-        const question = this.questions[this.currentQuestionIndex];
-
-        // Track which type of answer was selected (case or gender)
-        const cases = ['Nominativ', 'Akkusativ', 'Dativ', 'Genitiv'];
-        const genders = ['masculine', 'feminine', 'neuter'];
-
-        if (cases.includes(selectedAnswer)) {
-            // Deselect other case buttons
-            this.identifyBtns.forEach(btn => {
-                if (cases.includes(btn.dataset.answer)) {
-                    btn.classList.remove('selected');
-                }
-            });
-            selectedBtn.classList.add('selected');
-            this.selectedAnswers.case = selectedAnswer;
-        } else if (genders.includes(selectedAnswer)) {
-            // Deselect other gender buttons
-            this.identifyBtns.forEach(btn => {
-                if (genders.includes(btn.dataset.answer)) {
-                    btn.classList.remove('selected');
-                }
-            });
-            selectedBtn.classList.add('selected');
-            this.selectedAnswers.gender = selectedAnswer;
-        }
-
-        // Check if both case and gender are selected (if both are needed)
-        const needsCase = question.caseKey !== undefined;
-        const needsGender = question.gender !== undefined;
-
-        let canValidate = false;
-        if (needsCase && needsGender) {
-            canValidate = this.selectedAnswers.case && this.selectedAnswers.gender;
-        } else if (needsCase && !needsGender) {
-            canValidate = this.selectedAnswers.case;
-        } else if (needsGender && !needsCase) {
-            canValidate = this.selectedAnswers.gender;
-        } else {
-            canValidate = true; // For pronoun-only questions
-        }
-
-        if (canValidate) {
-            this.validateIdentifyAnswer(question);
-        }
-    }
-
-    validateIdentifyAnswer(question) {
-        let isCorrect = true;
-        
-        // Check case if needed
-        if (question.caseKey !== undefined) {
-            const caseCorrect = this.selectedAnswers.case === question.caseKey;
-            isCorrect = isCorrect && caseCorrect;
-            
-            // Highlight case buttons
-            this.identifyBtns.forEach(btn => {
-                const cases = ['Nominativ', 'Akkusativ', 'Dativ', 'Genitiv'];
-                if (cases.includes(btn.dataset.answer)) {
-                    btn.disabled = true;
-                    btn.classList.add('disabled');
-                    if (btn.dataset.answer === question.caseKey) {
-                        btn.classList.add('correct');
-                    } else if (btn.dataset.answer === this.selectedAnswers.case && !caseCorrect) {
-                        btn.classList.add('incorrect');
-                    }
-                }
-            });
-        }
-
-        // Check gender if needed
-        if (question.gender !== undefined) {
-            const genderCorrect = this.selectedAnswers.gender === question.gender;
-            isCorrect = isCorrect && genderCorrect;
-            
-            // Highlight gender buttons
-            this.identifyBtns.forEach(btn => {
-                const genders = ['masculine', 'feminine', 'neuter'];
-                if (genders.includes(btn.dataset.answer)) {
-                    btn.disabled = true;
-                    btn.classList.add('disabled');
-                    if (btn.dataset.answer === question.gender) {
-                        btn.classList.add('correct');
-                    } else if (btn.dataset.answer === this.selectedAnswers.gender && !genderCorrect) {
-                        btn.classList.add('incorrect');
-                    }
-                }
-            });
-        }
-
-        if (isCorrect) {
-            this.score++;
-        }
-
-        const userAnswer = `${this.selectedAnswers.case || ''} ${this.selectedAnswers.gender || ''}`.trim();
-        this.recordAnswer(question, userAnswer, isCorrect);
-        this.showFeedback(isCorrect, question.correctAnswer);
+        // Always show write container (identify mode removed)
+        // Clear and focus input
+        this.answerInput.value = '';
+        this.answerInput.classList.remove('correct', 'incorrect');
+        this.answerInput.disabled = false;
+        this.submitAnswerBtn.disabled = false;
+        setTimeout(() => this.answerInput.focus(), 100);
     }
 
     handleWriteAnswer() {

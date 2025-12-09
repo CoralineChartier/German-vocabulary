@@ -23,21 +23,7 @@
             
             <div id="stats-preview" class="stats-preview"></div>
             
-            <div class="menu-section">
-                <h3>Mode de quiz</h3>
-                <div class="button-group">
-                    <button id="mode-identify" class="mode-btn active" data-mode="identify">
-                        <span class="icon">🔍</span>
-                        <span>Identifier</span>
-                        <small>Cas & Genre</small>
-                    </button>
-                    <button id="mode-write" class="mode-btn" data-mode="write">
-                        <span class="icon">✏️</span>
-                        <span>Écrire</span>
-                        <small>Forme correcte</small>
-                    </button>
-                </div>
-            </div>
+            <!-- Mode selection removed - only write mode available -->
 
             <div class="menu-section">
                 <h3>Type de pratique</h3>
@@ -74,23 +60,8 @@
                     <p id="word-hint" class="hint"></p>
                 </div>
 
-                <!-- Identify Mode (Multiple Choice for Case & Gender) -->
-                <div id="identify-container" class="answer-container">
-                    <div class="identify-grid">
-                        <button class="identify-btn" data-answer="Nominativ">Nominatif</button>
-                        <button class="identify-btn" data-answer="Akkusativ">Accusatif</button>
-                        <button class="identify-btn" data-answer="Dativ">Datif</button>
-                        <button class="identify-btn" data-answer="Genitiv">Génitif</button>
-                    </div>
-                    <div class="identify-grid">
-                        <button class="identify-btn" data-answer="masculine">Masculin</button>
-                        <button class="identify-btn" data-answer="feminine">Féminin</button>
-                        <button class="identify-btn" data-answer="neuter">Neutre</button>
-                    </div>
-                </div>
-
                 <!-- Write Mode -->
-                <div id="write-container" class="answer-container hidden">
+                <div id="write-container" class="answer-container">
                     <label for="answer-input" class="visually-hidden">Votre réponse</label>
                     <input type="text" id="answer-input" placeholder="Écrivez la forme correcte..." autocomplete="off" autocapitalize="none" aria-label="Entrez votre réponse">
                     <button id="submit-answer" class="submit-btn">Valider</button>
